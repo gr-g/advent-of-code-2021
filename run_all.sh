@@ -21,7 +21,7 @@ cargo run --release --bin 18
 cargo run --release --bin 19
 cargo run --release --bin 20
 cargo run --release --bin 21
-#cargo run --release --bin 22
-#cargo run --release --bin 23
-#cargo run --release --bin 24
-#cargo run --release --bin 25
+cargo run --release --bin 22
+cargo run --release --bin 23
+cargo run --release --bin 24
+cargo run --release --bin 25

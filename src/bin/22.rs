@@ -62,7 +62,7 @@ fn count_on_cubes(cuboids: &Vec<Cuboid>) -> isize {
     expanded_cuboids
         .iter()
         .map(|c| { if c.on { c.volume() } else { -c.volume() } })
-        .sum::<isize>()
+        .sum()
 }
 
 fn solve(input: &str) -> (isize, isize) {
