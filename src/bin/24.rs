@@ -42,8 +42,8 @@ fn execute(program: &str, input: &[i64]) -> (i64, i64, i64, i64) {
     (w, x, y, z)
 }
 
-// A MONAD program is a set of 14 steps, each step being one of two
-// possible operations:
+// A MONAD program is a set of 14 steps, each reading an input value
+// (input[i]) and then performing one of two possible operations:
 //  - Push(n): "push" a value input[i]+n to z (z = z*26 + input[i]+n)
 //  - PopIf(m): "pop" a value k from z (k = z%26; z = z/26), but only
 //              if input[i] = k+m.
@@ -55,6 +55,7 @@ enum MonadStep {
 
 fn monad_decode(program: &str) -> Option<[MonadStep; 14]> {
     let mut result = [MonadStep::Push(0); 14];
+    let mut n_push = 0;
 
     let mut lines = program.lines();
     for i in 0..14 {
@@ -78,13 +79,21 @@ fn monad_decode(program: &str) -> Option<[MonadStep; 14]> {
         if lines.next()? != "add z y" { return None; }
 
         result[i] = match v1 {
-            1 if v2 >= 10 => MonadStep::Push(v3),
-            26 => MonadStep::PopIf(v2),
+            1 if v2 >= 10 => {
+                n_push += 1;
+                MonadStep::Push(v3)
+            },
+            26 => {
+                MonadStep::PopIf(v2)
+            },
             _ => return None,
         };
     }
 
     if !lines.next().is_none() { return None };
+
+    // We expect exactly 7 pushes and 7 pops.
+    if n_push != 7 { return None };
 
     Some(result)
 }
@@ -119,6 +128,8 @@ fn monad_valid_inputs(monad_program: &[MonadStep; 14]) -> Option<([i64; 14], [i6
             },
         }
     }
+
+    if !stack.is_empty() { return None };
 
     Some((min_input, max_input))
 }
